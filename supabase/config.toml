@@ -1,0 +1,2 @@
+[functions.register-student]
+verify_jwt = false
