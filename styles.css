@@ -162,3 +162,40 @@
 .social-confirm.social-locked{background:#faf8f7;border-color:#eee7e8;opacity:.72}
 .social-confirm.social-locked input{cursor:not-allowed}
 .social-confirm:not(.social-locked){background:#f0fff4;border-color:#b7dec3}
+
+
+/* Beneficios visibles tras el registro — vigentes para las primeras dos compras */
+.signup-body .first-two-purchases{display:flex;align-items:center;text-align:left;gap:12px;padding:16px 15px;
+ margin:22px 0 20px;border:1px solid #e3c27d;border-radius:18px;
+ background:linear-gradient(110deg,#fff7dc,#fffaf2,#fff2dc);box-shadow:0 8px 23px #b98f3c20}
+.signup-body .two-purchases-icon{display:grid;place-items:center;flex:none;width:44px;height:44px;
+ border-radius:14px;background:#fff1bf;color:#aa7d20;font-size:28px}
+.signup-body .first-two-purchases strong{display:block;font-size:15px;line-height:1.35;color:#75501a}
+.signup-body .first-two-purchases small{display:block;font-size:12px;line-height:1.5;margin-top:4px;color:#785e3f}
+.signup-body .success-benefits{text-align:left;margin:4px 0 22px}
+.signup-body .success-benefits h3{font-size:20px;margin:0 0 13px;font-weight:900;color:var(--ink)}
+.signup-body .success-benefits-list{display:grid;gap:11px}
+.signup-body .selected-benefit-card{border:1px solid #f1d9e3;background:linear-gradient(130deg,#fffafc,#fffefe);border-radius:17px;
+ padding:16px;box-shadow:0 7px 18px #c38f9c16}
+.signup-body .selected-benefit-card h4{margin:0 0 10px;font:800 15px/1.45 Nunito,Arial,sans-serif;color:#a54b77}
+.signup-body .selected-benefit-list{list-style:none;margin:0;padding:0;display:grid;gap:9px}
+.signup-body .selected-benefit-list li{padding:10px 12px 10px 31px;position:relative;
+ background:#fff6fa;border:1px solid #f4e4eb;border-radius:11px;font-size:13px;font-weight:700;color:#513742;line-height:1.45;overflow-wrap:anywhere}
+.signup-body .selected-benefit-list li::before{content:'✦';position:absolute;left:10px;top:10px;color:#b58a37;font-size:13px}
+.signup-body .selected-benefit-date,.signup-body .selected-benefit-terms{
+ margin:10px 1px 0;font-size:11px;color:#8b7280}
+.signup-body .selected-benefit-date{font-weight:800;color:#946b2a}
+.signup-body .benefits-info{font-size:12px;color:#7a6171;margin:14px 0 0;line-height:1.6}
+.signup-body .benefits-empty{background:#fff4e5;border-radius:12px;padding:13px;color:#805f38;font-size:12px}
+.admin-body .student-purchases{font-weight:800;color:#8b6527}
+.admin-body .purchase-remaining{background:#fff6e4;border:1px solid #eddbbb;padding:9px 10px;border-radius:10px;margin:9px 0;font-size:12px;color:#78511d}
+.admin-body .purchase-remaining.exhausted{background:#f9edec;border-color:#ecc5c0;color:#9d4540}
+.admin-body .tiny-button.purchase-record{border-color:#d6bd88;background:#fff7e8;color:#7c5c1f}
+.admin-body .tiny-button.purchase-record:disabled{opacity:.46;cursor:not-allowed}
+.admin-body .tiny-button.purchase-undo{color:#71656f}
+@media(max-width:580px){
+ .signup-body .first-two-purchases{padding:13px 12px}
+ .signup-body .first-two-purchases strong{font-size:14px}
+ .signup-body .selected-benefit-card{padding:13px}
+ .signup-body .selected-benefit-list li{font-size:12px}
+}
