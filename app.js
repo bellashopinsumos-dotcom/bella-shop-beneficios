@@ -89,7 +89,10 @@ form.addEventListener('submit',async event=>{
  try{
   const token=window.turnstile&&captchaId!==null?window.turnstile.getResponse(captchaId):null;
   await register({full_name:fullName,phone,teacher_slug:teacher.slug,consent:true,social_follow_confirmed:socialFollowConfirmed,policy_version:config().policyVersion||'2026-11-19-v1',turnstile_token:token,website:trap});
-  form.classList.add('hidden');document.getElementById('success').classList.remove('hidden');
+  form.classList.add('hidden');
+  document.getElementById('form-title').classList.add('hidden');
+  document.querySelector('.register-panel .subheading')?.classList.add('hidden');
+  document.getElementById('success').classList.remove('hidden');
  }catch(err){
   console.error(err);
   const messages={
