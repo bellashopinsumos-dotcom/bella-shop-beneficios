@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Nunito:wght@500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=viviana-galvis-3">
+  <link rel="stylesheet" href="styles.css?v=redes-paso-4">
 </head>
 <body class="signup-body">
   <div class="ambient ambient-a"></div>
@@ -68,22 +68,23 @@
           <div class="social-follow-head">
             <span class="social-small-tag">PASO OBLIGATORIO</span>
             <h3 id="social-follow-heading">Síguenos en nuestras redes <span aria-hidden="true">♡</span></h3>
-            <p>Para inscribirte, debes seguir a BellaShop en <strong>Instagram y TikTok</strong>.</p>
+            <p>Abre ambas cuentas, síguenos y vuelve para completar tu inscripción.</p>
           </div>
           <div class="social-links">
-            <a class="social-link instagram" href="https://www.instagram.com/bellashop_byluisazu/" target="_blank" rel="noopener noreferrer" aria-label="Seguir a BellaShop en Instagram, abre una pestaña nueva">
+            <a class="social-link instagram" data-social="instagram" href="https://www.instagram.com/bellashop_byluisazu/" target="_blank" rel="noopener noreferrer" aria-label="Seguir a BellaShop en Instagram, abre una pestaña nueva">
               <span class="social-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><rect x="2.5" y="2.5" width="19" height="19" rx="5.4"></rect><circle cx="12" cy="12" r="4.3"></circle><circle cx="17.9" cy="6.2" r="1" fill="currentColor" stroke="none"></circle></svg></span>
               <span class="social-meta"><strong>Instagram</strong><small>@bellashop_byluisazu</small></span>
               <span class="social-arrow" aria-hidden="true">↗</span>
             </a>
-            <a class="social-link tiktok" href="https://www.tiktok.com/@bellashopbyluisazu" target="_blank" rel="noopener noreferrer" aria-label="Seguir a BellaShop en TikTok, abre una pestaña nueva">
+            <a class="social-link tiktok" data-social="tiktok" href="https://www.tiktok.com/@bellashopbyluisazu" target="_blank" rel="noopener noreferrer" aria-label="Seguir a BellaShop en TikTok, abre una pestaña nueva">
               <span class="social-icon"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M16.8 2.4c.3 2.2 1.5 3.5 3.7 3.7v3.8c-1.6 0-2.9-.4-4-1.2v6.1a7 7 0 1 1-6.9-7V12a2.9 2.9 0 1 0 2.7 2.9V2.4h4.5Z"></path></svg></span>
               <span class="social-meta"><strong>TikTok</strong><small>@bellashopbyluisazu</small></span>
               <span class="social-arrow" aria-hidden="true">↗</span>
             </a>
           </div>
-          <div class="social-confirm">
-            <input id="social-follow-consent" type="checkbox" required>
+          <p id="social-progress" class="social-progress" role="status" aria-live="polite">Primero abre Instagram y TikTok para habilitar la confirmación.</p>
+          <div class="social-confirm social-locked">
+            <input id="social-follow-consent" type="checkbox" required disabled>
             <label for="social-follow-consent">Confirmo que ya sigo a BellaShop en <strong>Instagram y TikTok</strong>.</label>
           </div>
         </section>
@@ -126,6 +127,6 @@
   </main>
 
   <script src="config.js?v=viviana-galvis-3"></script>
-  <script type="module" src="app.js?v=viviana-galvis-3"></script>
+  <script type="module" src="app.js?v=redes-paso-4"></script>
 </body>
 </html>
