@@ -73,6 +73,11 @@ Deno.serve(async(req:Request)=>{
   if(!perIp||!global)return respond({error:'rate_limited'},429);
   if(!await verifyCaptcha(String(body.turnstile_token||''),ip))
     return respond({error:'CAPTCHA_REQUIRED'},400);
+  const campaignResponse=await fetch(url+'/rest/v1/campaign_settings?select=registration_open,ends_at&id=eq.1&limit=1',{headers:serverHeaders()});
+  if(!campaignResponse.ok)throw Error('campaign_lookup_failed');
+  const campaign=(await campaignResponse.json())[0];
+  if(!campaign||!campaign.registration_open||(campaign.ends_at&&new Date(campaign.ends_at)<=new Date()))
+    return respond({error:'campaign_closed'},403);
   const teacherResponse=await fetch(url+'/rest/v1/teachers?select=id&slug=eq.'+
    encodeURIComponent(slug)+'&active=eq.true&limit=1',{headers:serverHeaders()});
   if(!teacherResponse.ok)throw Error('teacher_lookup_failed');
