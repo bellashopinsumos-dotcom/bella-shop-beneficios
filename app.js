@@ -14,7 +14,10 @@ async function start(){
   const rows=await publicGet('teachers?select=id,display_name,slug&slug=eq.'+encodeURIComponent(slug)+'&active=eq.true&limit=1');
   if(!rows?.length){lock('Este enlace no está activo. Consulta en BellaShop.');return}
   teacher=rows[0];teacherDisplay.textContent=teacher.display_name;teacherReadonly.value=teacher.display_name;
-  if(config().registrationEnabled!==true){lock('El registro estará disponible próximamente. BellaShop está finalizando la activación de los beneficios.');}
+  const campaign=await publicGet('campaign_settings?select=registration_open,ends_at&id=eq.1&limit=1');
+  if(!campaign?.[0]?.registration_open || (campaign[0].ends_at && new Date(campaign[0].ends_at)<=new Date())){
+    lock('Esta temporada de beneficios ha finalizado. ¡Gracias por acompañarnos!');return;
+  }
  }catch(err){console.error(err);lock('Por ahora no pudimos cargar el registro. Intenta más tarde.')}
 }
 function loadCaptcha(){
@@ -44,7 +47,14 @@ form.addEventListener('submit',async event=>{
   form.classList.add('hidden');document.getElementById('success').classList.remove('hidden');
  }catch(err){
   console.error(err);
-  showNotice(notice,err.message==='CAPTCHA_REQUIRED'?'Completa el control de seguridad.':'No se pudo completar el registro. Consulta en BellaShop o intenta más tarde.','error');
+  const messages={
+   CAPTCHA_REQUIRED:'Por favor, completa el control de seguridad.',
+   rate_limited:'Se recibieron muchos registros. Intenta de nuevo en unos minutos.',
+   campaign_closed:'Esta temporada de beneficios ha finalizado.',
+   invalid_fields:'Revisa tu nombre, celular y autorización.',
+   register_unavailable:'No pudimos guardar tus datos. Intenta de nuevo en unos minutos.'
+  };
+  showNotice(notice,messages[err.message]||'No pudimos completar el registro. Intenta nuevamente.','error');
   if(window.turnstile&&captchaId!==null)window.turnstile.reset(captchaId);
  }finally{button.disabled=false;button.innerHTML='¡Quiero ser parte! <span>→</span>'}
 });
