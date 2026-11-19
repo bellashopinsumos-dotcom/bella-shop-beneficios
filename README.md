@@ -62,3 +62,13 @@ Para terminar la temporada: entrar al panel, sección **Temporada**, desmarcar "
 - Hay enlaces visibles con logos a ambas redes y una casilla de confirmación requerida. El backend exige \`social_follow_confirmed=true\` y registra \`social_follow_declared_at\`. **Es una declaración de la estudiante: no es una verificación automática de las plataformas.**
 - Botón de ayuda y contacto a **WhatsApp 3122002698**, con mensaje escrito para una estudiante de la profesora Viviana Galvis. También aparece tras registrarse.
 - Se actualizaron el aviso de tratamiento de datos, el panel administrativo (muestra la fecha de la declaración), la base y el servicio de registro de Supabase.
+
+## Descuentos visibles al terminar el registro y primeras 2 compras
+
+- Después de inscribirse, la estudiante ve los beneficios activos y vigentes de su profesora directamente desde Supabase. No se inventan porcentajes ni ofertas.
+- Cada descripción de descuento guardada en `product_codes` se presenta tal cual; los productos ingresados como códigos reciben el porcentaje indicado en ese beneficio. IMPORTANTE: el beneficio de Master Viviana Galvis contiene descripciones de descuentos mixtos, no verdaderos SKU. No interpretarlos como un 10 % general.
+- Mensaje a estudiantes: **«¡Listo! Ya puedes disfrutar de precios especiales»**, con el aviso **«¡Disfrútalos en tus primeras 2 compras!»**.
+- En el administrador, cada estudiante tiene un contador **Compras con beneficio: 0/2, 1/2 o 2/2**; se registra una compra manualmente con confirmación y se puede deshacer en caso de error.
+- Una tercera compra con beneficio está bloqueada por validación de interfaz y restricción SQL de la columna `benefit_purchases_used`.
+- No existe integración automática con la caja de BellaShop: el personal debe registrar cada compra en el panel al aplicar el descuento.
+- Los datos de estudiantes no quedan expuestos: la función de registro solo devuelve descuentos publicados y vigentes para la profesora, nunca datos de otros estudiantes.
