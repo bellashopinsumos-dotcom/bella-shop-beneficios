@@ -1,0 +1,1 @@
+window.BELLA_CONFIG={supabaseUrl:"https://PROYECTO.supabase.co",publishableKey:"sb_publishable_TU_CLAVE_PUBLICA",turnstileSiteKey:"",policyVersion:"2026-11-19-v1"};
