@@ -75,12 +75,17 @@ async function counts(){
  $('active-benefits').textContent=benefits.filter(active).length.toLocaleString('es-CO');
 }
 function studentCard(s,withBenefits=false){
- const selected=s.status==='active'?benefits.filter(b=>b.teacher_id===s.teacher_id&&active(b)):[];
+ const purchases=Math.max(0,Math.min(2,Number(s.benefit_purchases_used||0)));
+ const canRedeem=s.status==='active'&&purchases<2;
+ const selected=canRedeem?benefits.filter(b=>b.teacher_id===s.teacher_id&&active(b)):[];
  return '<article class="student-card">'+
   '<div class="card-head"><h3>'+e(s.full_name)+'</h3><span class="status '+(s.status==='active'?'':'off')+'">'+(s.status==='active'?'Activa':'Suspendida')+'</span></div>'+
   '<p class="benefit-meta">'+e(s.phone)+' · '+e(teacherName(s.teacher_id))+' · '+new Date(s.created_at).toLocaleDateString('es-CO')+'</p>'+'<p class="benefit-meta">Redes: '+(s.social_follow_declared_at?'Confirmación declarada el '+new Date(s.social_follow_declared_at).toLocaleDateString('es-CO'):'Sin confirmación registrada')+'</p>'+
-  (withBenefits?'<p class="benefit-meta"><b>Beneficios vigentes:</b> '+(selected.length?selected.map(b=>e(b.title)+' ('+Number(b.percent_off)+'%)').join(', '):'Ninguno')+'</p>':'')+
+  '<div class="purchase-remaining'+(purchases>=2?' exhausted':'')+'"><b>Compras con beneficio: '+purchases+'/2</b> · '+(purchases>=2?'Ya utilizó sus dos compras. No aplicar nuevos descuentos.':(2-purchases)+' compra(s) disponible(s).')+'</div>'+
+  (withBenefits?'<p class="benefit-meta"><b>Beneficios disponibles:</b> '+(selected.length?selected.map(b=>e(b.title)+': '+(b.product_codes||[]).map(e).join(' · ')).join(' / '):'Ninguno')+'</p>':'')+
   '<div class="admin-actions">'+
+  '<button type="button" class="tiny-button purchase-record" data-action="student-purchase" data-id="'+e(s.id)+'"'+(canRedeem?'':' disabled')+'>Registrar '+(purchases===0?'1.ª':'2.ª')+' compra</button>'+
+  '<button type="button" class="tiny-button purchase-undo" data-action="student-purchase-undo" data-id="'+e(s.id)+'"'+(purchases>0?'':' disabled')+'>Deshacer compra</button>'+
   '<button type="button" class="tiny-button" data-action="student-edit" data-id="'+e(s.id)+'">Editar</button>'+
   '<button type="button" class="tiny-button" data-action="student-toggle" data-id="'+e(s.id)+'">'+(s.status==='active'?'Suspender':'Reactivar')+'</button>'+
   '<button type="button" class="tiny-button danger-button" data-action="student-delete" data-id="'+e(s.id)+'">Eliminar</button>'+
@@ -91,7 +96,7 @@ function showStudents(rows,target,withBenefits=false){
  $(target).innerHTML=rows.length?'<div class="student-grid">'+rows.map(s=>studentCard(s,withBenefits)).join('')+'</div>':'No hay registros para mostrar.';
 }
 async function recents(){
- const rows=await privateRequest('students?select=id,full_name,phone,teacher_id,status,social_follow_declared_at,created_at&order=created_at.desc&limit=30');
+ const rows=await privateRequest('students?select=id,full_name,phone,teacher_id,status,benefit_purchases_used,social_follow_declared_at,created_at&order=created_at.desc&limit=30');
  showStudents(rows,'recent-students');
 }
 $('search-form').addEventListener('submit',async ev=>{
@@ -104,7 +109,7 @@ $('search-form').addEventListener('submit',async ev=>{
   /^\d+$/.test(cleaned)?'phone=ilike.*'+encodeURIComponent(cleaned)+'*':'full_name=ilike.*'+encodeURIComponent(cleaned)+'*';
  $('search-results').textContent='Buscando…';
  try{
-  const rows=await privateRequest('students?select=id,full_name,phone,teacher_id,status,created_at&'+filter+'&order=created_at.desc&limit=100');
+  const rows=await privateRequest('students?select=id,full_name,phone,teacher_id,status,benefit_purchases_used,social_follow_declared_at,created_at&'+filter+'&order=created_at.desc&limit=100');
   showStudents(rows,'search-results',true);
  }catch(err){$('search-results').textContent='No se pudo realizar la búsqueda.';alertError(err)}
 });
@@ -275,6 +280,25 @@ document.getElementById('dashboard').addEventListener('click',async ev=>{
   if(action.startsWith('student-')){
    const s=studentsById.get(id);if(!s)return;
    if(action==='student-edit'){openStudentEditor(s);return}
+   if(action==='student-purchase'||action==='student-purchase-undo'){
+    const used=Number(s.benefit_purchases_used||0);
+    const next=used+(action==='student-purchase'?1:-1);
+    if(next<0||next>2){notify('Esta estudiante ya tiene el límite correspondiente de dos compras.','error');return}
+    if(action==='student-purchase'&&s.status!=='active'){notify('No se pueden registrar compras con descuento a una estudiante suspendida.','error');return}
+    const ask=action==='student-purchase'?
+     '¿Confirmas que '+s.full_name+' realizó su compra '+next+' de 2 con beneficio?':
+     '¿Deshacer la última compra registrada de '+s.full_name+'?';
+    if(!confirm(ask))return;
+    const filter='students?id=eq.'+encodeURIComponent(id)+'&benefit_purchases_used=eq.'+used;
+    const rows=await privateRequest(filter,{method:'PATCH',headers:{Prefer:'return=representation'},
+     body:JSON.stringify({benefit_purchases_used:next})});
+    if(!Array.isArray(rows)||rows.length!==1)throw Error('La cuenta de compras cambió. Actualiza el panel antes de reintentar.');
+    notify(next===2?'¡Dos compras completadas! No se aplicarán más beneficios a esta estudiante.':'Control actualizado: '+next+' de 2 compras registradas.');
+    await reload();
+    if($('search-phone').value.trim())$('search-form').requestSubmit();
+    return;
+   }
+
    if(action==='student-toggle'){
     if(!confirm('¿Cambiar el estado de '+s.full_name+'?'))return;
     await privateRequest('students?id=eq.'+encodeURIComponent(id),
@@ -335,12 +359,12 @@ $('export-students').addEventListener('click',async()=>{
  try{
   const rows=[];
   for(let offset=0;offset<50000;offset+=1000){
-   const page=await privateRequest('students?select=full_name,phone,teacher_id,status,consented_at,social_follow_declared_at,created_at&order=created_at.desc&limit=1000&offset='+offset);
+   const page=await privateRequest('students?select=full_name,phone,teacher_id,status,consented_at,social_follow_declared_at,benefit_purchases_used,created_at&order=created_at.desc&limit=1000&offset='+offset);
    rows.push(...page);if(page.length<1000)break;
   }
-  const columns=['Nombre','Celular','Profesora','Estado','Fecha de autorización','Confirmación declarada de redes','Fecha de registro'];
+  const columns=['Nombre','Celular','Profesora','Estado','Fecha de autorización','Confirmación declarada de redes','Compras con beneficio (máximo 2)','Fecha de registro'];
   const csvField=value=>{let s=String(value??'');if(/^[=+@\-\t\r]/.test(s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"'};
-  const lines=[columns,...rows.map(s=>[s.full_name,s.phone,teacherName(s.teacher_id),s.status,s.consented_at,s.social_follow_declared_at,s.created_at])]
+  const lines=[columns,...rows.map(s=>[s.full_name,s.phone,teacherName(s.teacher_id),s.status,s.consented_at,s.social_follow_declared_at,s.benefit_purchases_used,s.created_at])]
    .map(row=>row.map(csvField).join(';')).join('\r\n');
   const blob=new Blob(['\ufeff'+lines],{type:'text/csv;charset=utf-8'});
   const url=URL.createObjectURL(blob);
