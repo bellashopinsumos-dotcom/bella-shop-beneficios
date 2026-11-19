@@ -58,6 +58,7 @@ Deno.serve(async(req:Request)=>{
  const slug=String(body.teacher_slug||'').trim().toLowerCase();
  const policy=String(body.policy_version||'').trim();
  if(body.website)return respond({ok:true}); // campo trampa invisible
+ if(body.social_follow_confirmed!==true)return respond({error:'social_follow_required'},400);
  if(fullName.length<4||fullName.length>120||fullName.split(' ').length<2||
    !/^3\d{9}$/.test(phone)|| !/^[a-z0-9-]{2,80}$/.test(slug)||
    body.consent!==true || !/^[a-zA-Z0-9._-]{3,60}$/.test(policy))
@@ -88,7 +89,7 @@ Deno.serve(async(req:Request)=>{
    headers:{...serverHeaders(),'Prefer':'return=minimal'},
    body:JSON.stringify({
     full_name:fullName,phone,teacher_id:found[0].id,
-    consented_at:new Date().toISOString(),policy_version:policy,status:'active'
+    consented_at:new Date().toISOString(),social_follow_declared_at:new Date().toISOString(),policy_version:policy,status:'active'
    })
   });
   // No revelar si un número ya estaba inscrito.
