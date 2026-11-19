@@ -46,7 +46,7 @@ form.addEventListener('submit',async event=>{
   console.error(err);
   showNotice(notice,err.message==='CAPTCHA_REQUIRED'?'Completa el control de seguridad.':'No se pudo completar el registro. Consulta en BellaShop o intenta más tarde.','error');
   if(window.turnstile&&captchaId!==null)window.turnstile.reset(captchaId);
- }finally{button.disabled=false;button.innerHTML='Quiero registrarme <span>→</span>'}
+ }finally{button.disabled=false;button.innerHTML='¡Quiero ser parte! <span>→</span>'}
 });
 document.getElementById('new-register').addEventListener('click',()=>location.reload());
 loadCaptcha();start();
