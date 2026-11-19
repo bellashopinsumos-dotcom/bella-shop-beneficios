@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f8dce7">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Administración · Master Viviana × BellaShop</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Nunito:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="admin-body">
+  <header class="admin-header">
+    <div class="brand-mark">
+      <span class="brand-icon">✦</span>
+      <span>Master Viviana <span class="brand-strong">× BellaShop</span></span>
+      <span class="admin-tag">ADMIN</span>
+    </div>
+    <button id="logout" type="button" class="text-button hidden">Cerrar sesión</button>
+  </header>
+
+  <main class="admin-main">
+    <section id="login-view" class="login-card">
+      <span class="eyebrow">ACCESO PRIVADO</span>
+      <h1>Panel Master Viviana × BellaShop</h1>
+      <p>Ingresa con tu cuenta autorizada para administrar registros, beneficios y enlaces QR.</p>
+      <div id="login-notice" class="notice hidden" role="status"></div>
+      <form id="login-form">
+        <label for="email">Correo electrónico</label>
+        <input id="email" type="email" required autocomplete="username" placeholder="tu@correo.com">
+        <label for="password">Contraseña</label>
+        <input id="password" type="password" required autocomplete="current-password" placeholder="••••••••">
+        <button class="primary-button" id="login-button">Ingresar al administrador <span>→</span></button>
+      </form>
+    </section>
+
+    <section id="dashboard" class="hidden">
+      <div class="dashboard-head">
+        <div>
+          <span class="eyebrow">PANEL DE CONTROL</span>
+          <h1>Master Viviana × BellaShop <span class="pink-dot">✿</span></h1>
+          <p>Busca estudiantes, consulta su profesora y administra promociones.</p>
+        </div>
+        <a href="index.html?profe=viviana" target="_blank" rel="noopener" class="secondary-button">Ver formulario ↗</a>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card"><div class="stat-label">Estudiantes registradas</div><div class="stat-value" id="total-students">—</div></div>
+        <div class="stat-card"><div class="stat-label">Estudiantes activas</div><div class="stat-value" id="active-students">—</div></div>
+        <div class="stat-card"><div class="stat-label">Beneficios vigentes</div><div class="stat-value" id="active-benefits">—</div></div>
+      </div>
+
+      <div id="admin-notice" class="notice hidden" role="status"></div>
+
+      <nav class="tabs" aria-label="Secciones del administrador">
+        <button class="tab active" data-tab="students" type="button">Estudiantes</button>
+        <button class="tab" data-tab="benefits" type="button">Beneficios</button>
+        <button class="tab" data-tab="teachers" type="button">Profesoras y QR</button>
+      </nav>
+
+      <section class="admin-section" id="tab-students">
+        <div class="section-head">
+          <div>
+            <h2>Buscar estudiante</h2>
+            <p>Consulta el celular completo para ver su registro y sus descuentos.</p>
+          </div>
+        </div>
+        <form id="search-form" class="search-form">
+          <input id="search-phone" type="tel" inputmode="numeric" placeholder="Ej. 3001234567" required>
+          <button class="primary-button">Buscar</button>
+        </form>
+        <div id="search-results" class="result-placeholder">Busca un número para consultar su información.</div>
+        <h3 class="small-section-title">Últimas registradas</h3>
+        <div id="recent-students" class="table-wrap"></div>
+      </section>
+
+      <section class="admin-section hidden" id="tab-benefits">
+        <div class="section-head">
+          <div>
+            <h2>Configurar beneficio</h2>
+            <p>Solo se aplicará a los códigos de producto que especifiques y durante las fechas indicadas.</p>
+          </div>
+        </div>
+        <form id="benefit-form" class="benefit-grid">
+          <div>
+            <label for="benefit-teacher">Profesora</label>
+            <select id="benefit-teacher" required></select>
+          </div>
+          <div>
+            <label for="benefit-title">Nombre del beneficio</label>
+            <input id="benefit-title" maxlength="120" placeholder="Ej. Descuento de bienvenida" required>
+          </div>
+          <div>
+            <label for="benefit-percent">Descuento (%)</label>
+            <input type="number" min="0.01" max="100" step="0.01" id="benefit-percent" required placeholder="Ej. 10">
+          </div>
+          <div>
+            <label for="benefit-end">Válido hasta</label>
+            <input type="date" id="benefit-end" required>
+          </div>
+          <div class="span-2">
+            <label for="benefit-codes">Códigos exactos de productos participantes</label>
+            <textarea id="benefit-codes" rows="2" required placeholder="MUNA921-01, DN3656, ..."></textarea>
+            <p class="field-hint">Separados por comas. Si no hay códigos, no se crea el beneficio.</p>
+          </div>
+          <div class="span-2">
+            <label for="benefit-terms">Condiciones adicionales</label>
+            <textarea id="benefit-terms" rows="2" maxlength="500" placeholder="Ej. No acumulable con otras promociones."></textarea>
+          </div>
+          <button class="primary-button span-2" type="submit">Crear beneficio <span>+</span></button>
+        </form>
+        <h3 class="small-section-title">Beneficios creados</h3>
+        <div id="benefit-list"></div>
+      </section>
+
+      <section class="admin-section hidden" id="tab-teachers">
+        <div class="section-head">
+          <div>
+            <h2>Profesoras y enlaces QR</h2>
+            <p>Comparte el enlace individual de cada profesora. El QR se genera aquí.</p>
+          </div>
+        </div>
+        <div id="teacher-list"></div>
+      </section>
+    </section>
+  </main>
+
+  <script src="config.js"></script>
+  <script type="module" src="admin.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
+</body>
+</html>
