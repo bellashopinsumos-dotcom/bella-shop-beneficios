@@ -52,3 +52,13 @@ Las descargas CSV contienen datos personales: almacenar y compartir con cuidado 
 
 Para terminar la temporada: entrar al panel, sección **Temporada**, desmarcar "Permitir nuevas inscripciones" y pulsar "Guardar temporada". El enlace QR sigue existiendo, pero ya no admitirá nuevas inscripciones.
 
+
+
+## Campaña Master Viviana Galvis — redes y WhatsApp
+
+- Nombre público de la profesora: **Master Viviana Galvis**; el slug del QR original sigue siendo \`viviana\` para **no cambiar el enlace ya compartido**.
+- Mensaje de bienvenida: «En Master Viviana Galvis y BellaShop hemos preparado un espacio para ti en el mundo de las uñas. ¡Bienvenidos!».
+- Es obligatorio que la estudiante declare seguir las cuentas de BellaShop en **Instagram** (\`@bellashop_byluisazu\`) y **TikTok** (\`@bellashopbyluisazu\`) para enviar el formulario.
+- Hay enlaces visibles con logos a ambas redes y una casilla de confirmación requerida. El backend exige \`social_follow_confirmed=true\` y registra \`social_follow_declared_at\`. **Es una declaración de la estudiante: no es una verificación automática de las plataformas.**
+- Botón de ayuda y contacto a **WhatsApp 3122002698**, con mensaje escrito para una estudiante de la profesora Viviana Galvis. También aparece tras registrarse.
+- Se actualizaron el aviso de tratamiento de datos, el panel administrativo (muestra la fecha de la declaración), la base y el servicio de registro de Supabase.
