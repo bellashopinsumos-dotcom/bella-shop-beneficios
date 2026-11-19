@@ -1,5 +1,5 @@
 // BellaShop Beneficios: registro público con respuesta privada.
-const allowed=Deno.env.get('ALLOWED_ORIGIN')||'';
+const allowed=Deno.env.get('ALLOWED_ORIGIN')||'https://bellashopinsumos-dotcom.github.io';
 const url=(Deno.env.get('SUPABASE_URL')||'').replace(/\/$/,'');
 const key=Deno.env.get('BELLA_SERVER_KEY')||Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')||'';
 const secret=Deno.env.get('TURNSTILE_SECRET')||'';
