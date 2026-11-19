@@ -1,58 +1,81 @@
-# Master Viviana × BellaShop · Versión 1
+# Master Viviana × BellaShop
 
-Sistema independiente para registrar estudiantes referidas por una profesora, verificarlas por celular y administrar descuentos para códigos exactos de productos, con una identidad visual premium en rosado pastel y dorado para la campaña Master Viviana × BellaShop.
+Sistema independiente de BellaShop para registrar estudiantes referidas por Master Viviana y gestionar sus beneficios mediante un administrador privado.
 
-## Estructura
+## Estado verificado — 19 de noviembre de 2026
 
-- `index.html?profe=viviana`: registro público accesible desde el QR.
-- `admin.html`: inicio de sesión, búsqueda, suspensión/reactivación, beneficios, enlaces y QR.
-- `privacidad.html`: borrador de aviso de datos personales — **completar antes de publicar**.
-- `config.js`: URL y clave **publicable** de Supabase; nunca poner una clave secreta aquí.
-- `supabase/schema.sql`: tablas, restricciones, permisos y reglas de seguridad (RLS).
-- `supabase/functions/register-student/index.ts`: servicio público de registro, con validaciones y comprobación opcional de Cloudflare Turnstile.
+- ✅ Repositorio GitHub `bellashopinsumos-dotcom/bella-shop-beneficios` con registro, estilos rosa pastel y dorado, administrador y código backend.
+- ✅ Workflow de GitHub Pages guardado en `.github/workflows/pages.yml`. **La activación y publicación efectiva deben confirmarse en Settings > Pages y Actions.**
+- ✅ Proyecto Supabase **Master Viviana** creado en la organización BellaShop (`faijbrdkxuqcgszlxqrx`), región us-east-2.
+- ✅ Tablas `teachers`, `students`, `benefits` y `admins` creadas con RLS.
+- ✅ Comprobado: el rol anónimo NO puede consultar estudiantes ni beneficios, ni insertar estudiantes directamente.
+- ✅ Profesora inicial `Master Viviana` con identificador `viviana`.
+- ✅ Función `register-student` publicada. **No recibe registros hasta completar la protección antispam.**
+- ✅ `config.js` conectado a la URL y clave **publicable** del proyecto nuevo.
+- ⏳ Alta del usuario administrador, captcha, política de datos y verificación funcional completa todavía pendientes.
+- ⛔ `registrationEnabled: false` en `config.js`. No activar hasta finalizar los pasos siguientes.
 
-## Instalar por primera vez
+## Accesos
 
-1. Crear un **repositorio público nuevo** en la cuenta de GitHub de BellaShop: `bella-shop-beneficios`. No reutilizar `bella-shop-pruebas`, `bella-shop-carrito` ni `rutaya`.
-2. Crear **un proyecto nuevo de Supabase** llamado `bella-shop-beneficios`, preferiblemente en la misma organización BellaShop. La creación puede tener costos según el plan: revisarlos antes de aceptar.
-3. En el proyecto nuevo, ejecutar `supabase/schema.sql` con `SQL Editor`. **NO ejecutar en otros proyectos.** El script crea una profesora provisional con nombre `Master Viviana` e identificador `viviana`.
-4. En Supabase > Authentication > Users, crear manualmente el usuario administrativo con correo electrónico y contraseña fuerte. Copiar el UID y ejecutar este comando en SQL Editor sustituyendo el UID real:
+- Supabase: https://supabase.com/dashboard/project/faijbrdkxuqcgszlxqrx
+- Repositorio: https://github.com/bellashopinsumos-dotcom/bella-shop-beneficios
+- URL prevista del registro: https://bellashopinsumos-dotcom.github.io/bella-shop-beneficios/?profe=viviana
+- URL prevista del administrador: https://bellashopinsumos-dotcom.github.io/bella-shop-beneficios/admin.html
 
-   ```sql
-   insert into public.admins (user_id) values ('UUID_REAL_DEL_USUARIO');
-   ```
+**Importante:** estas URLs de GitHub Pages son previstas, no confirmadas como publicadas.
 
-5. Desplegar la función `register-student` desde Supabase Edge Functions con `verify_jwt=false` **porque es un registro público**. Usa `SUPABASE_URL` y la clave de servidor `BELLA_SERVER_KEY` configuradas como secretos; si no se define `BELLA_SERVER_KEY`, usa `SUPABASE_SERVICE_ROLE_KEY` cuando esté disponible. **NUNCA publicar claves de servidor en GitHub ni en config.js.**
-6. Antes de recibir registros reales, activar Cloudflare Turnstile: `TURNSTILE_SECRET` solo en los secretos de Edge Functions, `turnstileSiteKey` público en `config.js`. También configurar `ALLOWED_ORIGIN` con el origen exacto de GitHub Pages, por ejemplo `https://bellashopinsumos-dotcom.github.io` (sin `/bella-shop-beneficios/`). Este servicio no incorpora por ahora una limitación transaccional por IP: Turnstile es obligatorio para activar el registro público: esta versión de la función rechaza registros si falta TURNSTILE_SECRET.
-7. Copiar la URL del nuevo proyecto y su **publishable key** (`sb_publishable_...`) en `config.js`, que es el archivo que también se sube a GitHub Pages. No usar `sb_secret_...` aquí.
-8. Completar `privacidad.html` con los datos reales del responsable y política correspondiente; el borrador actual no es una política final. Confirmar la grafía oficial del nombre de la profesora y actualizarlo en la tabla `teachers`.
-9. Subir los archivos (conservar las rutas de subcarpetas), entrar a Settings > Pages > Deploy from a branch > `main` > `/ (root)`.
-10. Cuando GitHub Pages esté activo, abrir `https://bellashopinsumos-dotcom.github.io/bella-shop-beneficios/?profe=viviana`. Este enlace es una **URL prevista**, no se ha publicado aún. Ingresar a `admin.html` con la cuenta autorizada y generar el QR desde la sección Profesoras y QR.
+## Pendientes obligatorios para el lanzamiento
 
-## Pruebas antes de compartir el QR
+### 1. Crear administrador
 
-- Registrar un número de prueba con permiso expreso y comprobar que aparece en la tabla privada.
-- Probar repetir el mismo teléfono: debe devolver recepción genérica sin crear dos filas.
-- Probar un teléfono inválido y rechazo de autorización.
-- Acceder a `/rest/v1/students` usando solo la clave publicable: **no debe devolver ninguna fila ni permitir inserciones.**
-- Probar inicio de sesión con una cuenta no autorizada: **no debe ver datos.**
-- Crear un descuento para un código exacto, comprobar que aparece solo si está vigente y para su profesora.
-- Suspender una estudiante, comprobar que el descuento deja de aparecer al buscarla.
-- Confirmar que la política de privacidad está terminada antes de usar datos reales.
+En el proyecto **Master Viviana** (¡no tocar RutaYa!), entra a **Authentication > Users** y crea el usuario que utilizará el personal de BellaShop. Usa una contraseña fuerte y correo controlado por el responsable. Copia su UID de Supabase Auth.
 
-## Decisiones de producto
+En SQL Editor del mismo proyecto ejecuta:
 
-- Una estudiante se identifica por un celular único, vinculado a la profesora con la que se inscribió originalmente. Cambios de profesor requieren intervención administrativa para evitar conflictos.
-- El formulario no pide correo ni crea cuentas para estudiantes.
-- **No se aplica ningún descuento automáticamente** al carrito o al POS: la persona de BellaShop debe verificarlo y aplicar la promoción en tienda.
-- Beneficios necesitan porcentajes, fechas y códigos de producto exactos. Un código omitido no tiene descuento.
-- Los datos personales nunca están disponibles para visitantes públicos; acceso administrativo mediante Supabase Auth y RLS.
-- Los registros usan consentimiento, pero el borrador de la política exige revisión legal y datos de contacto.
+```sql
+insert into public.admins (user_id) values ('UID_REAL_DEL_USUARIO');
+```
 
-## Nota de seguridad
+No compartas contraseñas por chat ni las subas a GitHub.
 
-La función pública exige validación, origen autorizado, honeypot y Turnstile; no incorpora auditoría ni límites transaccionales de solicitudes; para una versión de mayor tráfico se recomienda añadirlos. El control de origen **no sustituye** captcha ni autenticación. Evita desplegar sin completar primero la protección antiabuso y la política de datos.
+### 2. Proteger con Cloudflare Turnstile
 
-## Publicación GitHub Pages (automática)
+Crea un widget **Cloudflare Turnstile** para el dominio `bellashopinsumos-dotcom.github.io`.
 
-El repositorio incorpora `.github/workflows/pages.yml` para publicar automáticamente la página desde `main`. Si el primer despliegue no activa GitHub Pages, ve a Settings > Pages > Build and deployment y selecciona GitHub Actions como origen; comprueba el resultado en la pestaña Actions. No compartir el QR mientras Supabase, Turnstile y la política de privacidad sigan pendientes.
+- Copia la **site key pública** a `turnstileSiteKey` en `config.js`.
+- Coloca **TURNSTILE_SECRET** en el proyecto Master Viviana, dentro de **Edge Functions > Secrets**. Nunca la subas al repositorio.
+- La función `register-student` bloquea registros si falta `TURNSTILE_SECRET`. Además, necesita `SUPABASE_URL` y `SUPABASE_SERVICE_ROLE_KEY` (variables que normalmente ofrece automáticamente Supabase a sus Edge Functions). Si no están presentes, configúralas en un entorno seguro, no en GitHub.
+- El origen permitido por defecto es `https://bellashopinsumos-dotcom.github.io`. Si cambias el dominio, configura `ALLOWED_ORIGIN` en secretos.
+- Para mayor escala, agregar límites por IP, monitoreo y controles adicionales.
+
+### 3. Completar privacidad
+
+Antes de guardar estudiantes reales, termina `privacidad.html` con:
+- Responsable legal de BellaShop e identificación.
+- Correo o canal oficial para ejercer derechos.
+- Plazo de conservación, eliminación y versión final aprobada de la política.
+- Una revisión adecuada a la normativa aplicable en Colombia.
+
+No uses los números registrados para campañas publicitarias sin autorización específica.
+
+### 4. Publicar y comprobar
+
+1. Verifica GitHub **Settings > Pages**. Si no se publica con el workflow ya creado, selecciona **GitHub Actions** como fuente y revisa la pestaña **Actions**.
+2. En `config.js`, cambia `registrationEnabled` a `true` **solo tras terminar 1, 2 y 3**.
+3. Abre el registro con `?profe=viviana` y realiza un registro autorizado de prueba.
+4. Confirma en el administrador que aparece el registro y que buscar por teléfono funciona.
+5. Prueba el control de duplicados, una estudiante suspendida, y un beneficio con códigos de producto exactos y fecha vigente.
+6. Genera el QR dentro de la pestaña **Profesoras y QR**.
+
+## Sistema
+
+- `index.html`: registro público de estudiante.
+- `admin.html`: acceso protegido, búsqueda, estados, beneficios y QR.
+- `privacidad.html`: borrador con información legal pendiente.
+- `api.js`, `app.js`, `admin.js`: lógica de frontend.
+- `config.js`: URL y clave pública; nunca guardar secretos.
+- `supabase/schema.sql`: esquema aplicado al proyecto Master Viviana.
+- `supabase/functions/register-student/index.ts`: servicio de registro ya desplegado.
+- `.github/workflows/pages.yml`: pipeline de publicación automática.
+
+**No existe conexión con RutaYa ni con el inventario de BellaShop.** Los descuentos no se aplican solos: el personal verifica celular y códigos en tienda.
