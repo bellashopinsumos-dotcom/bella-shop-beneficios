@@ -35,15 +35,17 @@ form.addEventListener('submit',async event=>{
  const fullName=document.getElementById('full-name').value.trim().replace(/\s+/g,' ');
  const phone=normalizePhone(document.getElementById('phone').value);
  const consent=document.getElementById('privacy-consent').checked;
+ const socialFollowConfirmed=document.getElementById('social-follow-consent').checked;
  const trap=document.getElementById('website').value;
  if(fullName.length<4||fullName.length>120||fullName.split(' ').length<2){showNotice(notice,'Escribe tu nombre y apellido completos.','error');return}
  if(!phone){showNotice(notice,'Escribe un celular colombiano válido de 10 dígitos.','error');return}
+ if(!socialFollowConfirmed){showNotice(notice,'Para inscribirte, sigue a BellaShop en Instagram y TikTok y confirma que ya lo hiciste.','error');document.getElementById('social-follow-consent').focus();return}
  if(!consent){showNotice(notice,'Debes autorizar el tratamiento de datos.','error');return}
  if(trap)return;
  button.disabled=true;button.textContent='Registrando...';
  try{
   const token=window.turnstile&&captchaId!==null?window.turnstile.getResponse(captchaId):null;
-  await register({full_name:fullName,phone,teacher_slug:teacher.slug,consent:true,policy_version:config().policyVersion||'2026-11-19-v1',turnstile_token:token,website:trap});
+  await register({full_name:fullName,phone,teacher_slug:teacher.slug,consent:true,social_follow_confirmed:socialFollowConfirmed,policy_version:config().policyVersion||'2026-11-19-v1',turnstile_token:token,website:trap});
   form.classList.add('hidden');document.getElementById('success').classList.remove('hidden');
  }catch(err){
   console.error(err);
@@ -52,6 +54,7 @@ form.addEventListener('submit',async event=>{
    rate_limited:'Se recibieron muchos registros. Intenta de nuevo en unos minutos.',
    campaign_closed:'Esta temporada de beneficios ha finalizado.',
    invalid_fields:'Revisa tu nombre, celular y autorización.',
+   social_follow_required:'Es obligatorio seguir nuestras cuentas de Instagram y TikTok y marcar la confirmación.',
    register_unavailable:'No pudimos guardar tus datos. Intenta de nuevo en unos minutos.'
   };
   showNotice(notice,messages[err.message]||'No pudimos completar el registro. Intenta nuevamente.','error');
