@@ -199,3 +199,25 @@
  .signup-body .selected-benefit-card{padding:13px}
  .signup-body .selected-benefit-list li{font-size:12px}
 }
+
+/* Catálogo BellaShop al finalizar la inscripción */
+.signup-body .catalog-callout{
+ margin:22px 0 18px;padding:19px 18px;border:1px solid #ecd7a9;border-radius:19px;
+ background:linear-gradient(135deg,#fffaf0,#fff9fc);box-shadow:0 9px 24px #aa8a6d1b;text-align:left;
+}
+.signup-body .catalog-callout-icon{
+ display:grid;place-items:center;background:#fff1d1;color:#a77b29;border-radius:12px;
+ width:38px;height:38px;font-size:24px;margin-bottom:10px;
+}
+.signup-body .catalog-callout h3{font-size:20px;margin:0 0 10px;font-weight:900}
+.signup-body .catalog-callout p{font-size:12px;line-height:1.65;color:#715b66;margin:8px 0}
+.signup-body .catalog-callout p strong{color:#a25279}
+.signup-body .catalog-shop-link{
+ display:flex;align-items:center;justify-content:center;gap:12px;width:100%;min-height:48px;
+ margin-top:16px;padding:12px 15px;border-radius:13px;text-decoration:none;color:white;
+ font-size:14px;font-weight:900;background:linear-gradient(105deg,#cc5e91,#c49b4b);
+ box-shadow:0 9px 25px #bf879a30;transition:transform .22s ease,filter .22s ease;
+}
+.signup-body .catalog-shop-link:hover{transform:translateY(-2px);filter:brightness(1.04)}
+.signup-body .catalog-shop-link:focus-visible{outline:3px solid #8c671f;outline-offset:3px}
+@media(prefers-reduced-motion:reduce){.signup-body .catalog-shop-link{transition:none}.signup-body .catalog-shop-link:hover{transform:none}}
