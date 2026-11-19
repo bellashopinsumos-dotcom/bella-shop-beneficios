@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f8dce7">
+  <meta name="description" content="Registro oficial de Master Viviana × BellaShop para beneficios exclusivos de estudiantes.">
+  <title>Master Viviana × BellaShop</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Nunito:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="signup-body">
+  <div class="ambient ambient-a"></div>
+  <div class="ambient ambient-b"></div>
+  <div class="ambient ambient-c"></div>
+
+  <main class="signup-layout">
+    <section class="intro luxury-intro">
+      <div class="brand-mark hero-brand">
+        <span class="brand-icon">✦</span>
+        <span>Bella<span class="brand-strong">Shop</span></span>
+      </div>
+
+      <span class="eyebrow hero-eyebrow">MASTER VIVIANA × BELLASHOP</span>
+      <div class="gold-seal">Beneficios exclusivos para estudiantes</div>
+      <h1>Tu formación en uñas ahora viene con un toque <em>dorado</em>.</h1>
+      <p>
+        Bienvenida a la página oficial de <strong>Master Viviana × BellaShop</strong>.
+        Aquí podrás registrar tu información para acceder a beneficios especiales,
+        promociones seleccionadas y atención preferencial en tienda.
+      </p>
+
+      <div class="feature-list">
+        <article class="feature-card">
+          <span>✿</span>
+          <div>
+            <strong>Registro rápido</strong>
+            <p>En pocos segundos dejas tus datos listos.</p>
+          </div>
+        </article>
+        <article class="feature-card">
+          <span>★</span>
+          <div>
+            <strong>Beneficios verificados</strong>
+            <p>BellaShop valida tu número en tienda antes de aplicar promociones.</p>
+          </div>
+        </article>
+        <article class="feature-card">
+          <span>✦</span>
+          <div>
+            <strong>Experiencia especial</strong>
+            <p>Una alianza pensada para consentir a las estudiantes de Master Viviana.</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="hero-quote">
+        <span class="quote-mark">“</span>
+        <div>
+          <strong>Más que un registro, esta es tu entrada a una experiencia BellaShop.</strong>
+          <p>Diseñado para que cada estudiante se sienta bienvenida desde el primer clic.</p>
+        </div>
+      </div>
+
+      <div class="intro-footer">Hecho con cariño para BellaShop en Popayán <span>♥</span></div>
+    </section>
+
+    <section class="panel register-panel luxury-panel">
+      <div class="panel-topline">
+        <span class="step-pill gold">REGISTRO OFICIAL</span>
+        <span class="heart">♡</span>
+      </div>
+
+      <div class="teacher-avatar gold-avatar">✿</div>
+      <h2 id="form-title">Bienvenida a <span>Master Viviana × BellaShop</span></h2>
+      <p class="subheading">
+        Regístrate para acceder a los beneficios especiales de las estudiantes de
+        <strong id="teacher-display">Master Viviana</strong>.
+      </p>
+
+      <div class="highlight-box">
+        <div class="highlight-item"><b>✔</b><span>Registro asociado a tu profesora</span></div>
+        <div class="highlight-item"><b>✔</b><span>Verificación por número celular</span></div>
+        <div class="highlight-item"><b>✔</b><span>Promociones sujetas a condiciones vigentes</span></div>
+      </div>
+
+      <div id="notice" class="notice hidden" role="status" aria-live="polite"></div>
+
+      <form id="register-form" novalidate>
+        <label for="full-name">Tu nombre completo</label>
+        <div class="input-wrap">
+          <span aria-hidden="true">♙</span>
+          <input id="full-name" name="full_name" type="text" autocomplete="name" minlength="4" maxlength="120" required placeholder="Ej. María Pérez">
+        </div>
+
+        <label for="phone">Número de celular</label>
+        <div class="input-wrap">
+          <span aria-hidden="true">☏</span>
+          <input id="phone" name="phone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="3XX XXX XXXX" minlength="10" maxlength="16" required>
+        </div>
+        <p class="field-hint">Usaremos tu número para verificar tu registro cuando visites BellaShop.</p>
+
+        <label for="teacher-readonly">Profesora que te recomienda</label>
+        <div class="input-wrap muted">
+          <span aria-hidden="true">✿</span>
+          <input id="teacher-readonly" type="text" value="Master Viviana" readonly>
+        </div>
+
+        <div class="consent-row">
+          <input id="privacy-consent" type="checkbox" required>
+          <label for="privacy-consent">
+            Autorizo el tratamiento de mis datos personales para gestionar mi registro y beneficios, según la
+            <a href="privacidad.html" target="_blank" rel="noopener">política de tratamiento de datos</a>.
+          </label>
+        </div>
+
+        <div id="turnstile-slot" class="turnstile-slot"></div>
+        <div class="trap" aria-hidden="true">
+          <label for="website">Deja este campo vacío</label>
+          <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+        </div>
+
+        <button class="primary-button luxury-button" type="submit" id="register-btn">
+          Quiero registrarme <span>→</span>
+        </button>
+        <p class="footnote">El registro no garantiza descuentos automáticos; están sujetos a las condiciones vigentes en tienda.</p>
+      </form>
+
+      <div class="success hidden" id="success" role="status" aria-live="polite">
+        <div class="success-icon">✓</div>
+        <h2>¡Tu solicitud fue recibida!</h2>
+        <p>Cuando visites BellaShop, indica tu número de celular para consultar si tienes beneficios disponibles.</p>
+        <button id="new-register" type="button" class="secondary-button">Volver al inicio</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="config.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
