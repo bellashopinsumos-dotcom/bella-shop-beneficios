@@ -92,3 +92,62 @@
  .tabs{scrollbar-width:thin}
  .admin-section{padding:19px 16px}
 }
+
+
+/* Redes y contacto — Master Viviana Galvis × BellaShop */
+.signup-body .welcome-message{margin-bottom:8px}
+.signup-body .welcome-greeting{font-family:Nunito,Arial,sans-serif;color:#b54e82;font-size:22px;font-weight:900;margin-top:3px}
+.signup-body .welcome-greeting span{color:var(--gold)}
+.social-follow{border:1px solid #f0d9e2;background:linear-gradient(135deg,#fff9fb,#fffdf8);
+ border-radius:18px;padding:16px;margin:20px 0 12px}
+.social-follow-head{text-align:left}
+.social-small-tag{display:inline-block;font-size:9px;letter-spacing:.11em;font-weight:900;
+ padding:5px 9px;background:#ffebf3;border-radius:99px;color:#a84974}
+.social-follow-head h3{font-size:17px;margin:9px 0 4px;color:var(--ink);line-height:1.3}
+.social-follow-head h3 span{color:var(--rose)}
+.social-follow-head p{font-size:12px;margin:0 0 12px;color:var(--muted)}
+.social-links{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.social-link{display:flex;align-items:center;gap:8px;min-width:0;padding:10px 9px;
+ background:#fff;border:1px solid #f0d8e2;border-radius:13px;text-decoration:none;
+ color:var(--ink);box-shadow:0 3px 10px #bd9eab0c;transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
+.social-link:hover{transform:translateY(-2px);border-color:#e5b8cc;box-shadow:0 8px 20px #bd9eab23}
+.social-link:focus-visible,.support-whatsapp:focus-visible{outline:3px solid #a97b2b;outline-offset:3px}
+.social-icon{width:34px;height:34px;display:grid;place-items:center;color:#fff;border-radius:10px;flex:none}
+.social-icon svg{width:19px;height:19px}
+.social-link.instagram .social-icon{background:linear-gradient(135deg,#7f42d4,#dd347f,#ffb456)}
+.social-link.tiktok .social-icon{background:#202129}
+.social-meta{display:grid;gap:1px;min-width:0}
+.social-meta strong{font-size:12px;font-weight:900}
+.social-meta small{font-size:9px;color:var(--muted);overflow-wrap:anywhere;line-height:1.2}
+.social-arrow{color:var(--gold);font-size:17px;font-weight:800;margin-left:auto;flex:none}
+.social-confirm{display:flex;align-items:flex-start;gap:9px;margin-top:13px;padding:10px;
+ background:#fff6eb;border:1px solid #f5dfb9;border-radius:12px}
+.social-confirm input{width:17px;height:17px;flex:none;accent-color:var(--rose);margin:2px 0 0}
+.social-confirm label{margin:0;font-size:11px;line-height:1.5;font-weight:500;color:#65515c;cursor:pointer}
+.social-confirm strong{color:#a44d77}
+.support-whatsapp{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);
+ border:1px solid #cbe9da;background:#f4fcf7;border-radius:13px;padding:11px 12px;
+ margin-top:15px;transition:transform .2s ease,box-shadow .2s ease}
+.support-whatsapp:hover{transform:translateY(-2px);box-shadow:0 8px 22px #52b77c22}
+.whatsapp-icon{width:37px;height:37px;display:grid;place-items:center;flex:none;
+ border-radius:12px;background:#25b966;color:white}
+.whatsapp-icon svg{width:24px;height:24px}
+.support-whatsapp>span:nth-child(2){display:grid;gap:1px;min-width:0}
+.support-whatsapp strong{font-size:12px;font-weight:800}
+.support-whatsapp small{font-size:11px;color:#537665}
+.support-whatsapp .social-arrow{color:#359c66}
+.success-wa{max-width:355px;margin:17px auto}
+.success-wa .support-whatsapp{text-align:left}
+@media(max-width:480px){
+ .social-links{grid-template-columns:1fr 1fr;gap:7px}
+ .social-link{flex-wrap:wrap;gap:5px;padding:9px 7px}
+ .social-icon{width:31px;height:31px}
+ .social-meta strong{font-size:11px}
+ .social-meta small{font-size:9px}
+ .social-arrow{font-size:14px}
+ .social-follow{padding:13px}
+}
+@media(prefers-reduced-motion:reduce){
+ .social-link,.support-whatsapp{transition:none}
+ .social-link:hover,.support-whatsapp:hover{transform:none}
+}
