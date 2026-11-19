@@ -16,6 +16,7 @@ create table public.students (
  status text not null default 'active' check (status in ('active','suspended')),
  consented_at timestamptz not null,
  social_follow_declared_at timestamptz, -- Declaración voluntaria; no prueba seguimiento real
+ benefit_purchases_used smallint not null default 0 check (benefit_purchases_used between 0 and 2), -- Dos primeras compras con beneficio
  policy_version text not null,
  created_at timestamptz not null default now()
 );
@@ -77,7 +78,7 @@ insert into public.teachers(display_name,slug) values ('Master Viviana Galvis','
 -- Funcionalidades adicionales de temporada instaladas en Master Viviana:
 -- registro directo, herramientas CRUD del administrador y apertura/cierre de inscripciones.
 grant insert, delete on public.students to authenticated;
-grant update(full_name, phone, teacher_id, status) on public.students to authenticated;
+grant update(full_name, phone, teacher_id, status, benefit_purchases_used) on public.students to authenticated;
 create policy "admin_agrega_estudiantes" on public.students
  for insert to authenticated
  with check(exists(select 1 from public.admins a where a.user_id=(select auth.uid()) and a.enabled));
