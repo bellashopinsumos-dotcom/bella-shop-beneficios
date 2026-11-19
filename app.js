@@ -6,6 +6,41 @@ const teacherDisplay=document.getElementById('teacher-display');
 const teacherReadonly=document.getElementById('teacher-readonly');
 const slug=(new URLSearchParams(location.search).get('profe')||'viviana').trim().toLowerCase();
 let teacher=null;let captchaId=null;
+
+const socialConsent=document.getElementById('social-follow-consent');
+const socialProgress=document.getElementById('social-progress');
+const socialLinks=[...document.querySelectorAll('.social-link[data-social]')];
+const socialVisitKey='bella_viviana_visitas_redes_v1';
+let socialVisits={instagram:false,tiktok:false};
+try{
+ const saved=JSON.parse(sessionStorage.getItem(socialVisitKey)||'{}');
+ socialVisits={instagram:saved.instagram===true,tiktok:saved.tiktok===true};
+}catch{}
+function socialStepsDone(){return socialVisits.instagram&&socialVisits.tiktok}
+function updateSocialSteps(){
+ const complete=socialStepsDone();
+ socialConsent.disabled=!complete;
+ if(!complete)socialConsent.checked=false;
+ document.querySelector('.social-confirm').classList.toggle('social-locked',!complete);
+ socialLinks.forEach(link=>{
+  const visited=!!socialVisits[link.dataset.social];
+  link.classList.toggle('social-visited',visited);
+  link.setAttribute('aria-label',(visited?'Perfil abierto anteriormente. ':'Abrir perfil de ') + (link.dataset.social==='instagram'?'Instagram':'TikTok')+' de BellaShop en una pestaña nueva');
+ });
+ if(complete) socialProgress.textContent='¡Ya abriste ambas redes! Si nos seguiste en las dos, marca la confirmación para continuar.';
+ else if(socialVisits.instagram) socialProgress.textContent='¡Instagram abierto! Ahora abre TikTok y regresa a confirmar.';
+ else if(socialVisits.tiktok) socialProgress.textContent='¡TikTok abierto! Ahora abre Instagram y regresa a confirmar.';
+ else socialProgress.textContent='Paso 1: abre Instagram y TikTok. Después podrás marcar la confirmación.';
+}
+socialLinks.forEach(link=>link.addEventListener('click',()=>{
+ const network=link.dataset.social;
+ if(network!=='instagram'&&network!=='tiktok')return;
+ socialVisits[network]=true;
+ try{sessionStorage.setItem(socialVisitKey,JSON.stringify(socialVisits))}catch{}
+ updateSocialSteps();
+}));
+updateSocialSteps();
+
 function lock(msg){button.disabled=true;showNotice(notice,msg,'warning')}
 async function start(){
  if(!ready()){lock('Estamos preparando este beneficio. Aún no se reciben registros: falta conectar la base de datos.');return}
@@ -35,11 +70,19 @@ form.addEventListener('submit',async event=>{
  const fullName=document.getElementById('full-name').value.trim().replace(/\s+/g,' ');
  const phone=normalizePhone(document.getElementById('phone').value);
  const consent=document.getElementById('privacy-consent').checked;
- const socialFollowConfirmed=document.getElementById('social-follow-consent').checked;
+ const socialFollowConfirmed=socialConsent.checked;
  const trap=document.getElementById('website').value;
  if(fullName.length<4||fullName.length>120||fullName.split(' ').length<2){showNotice(notice,'Escribe tu nombre y apellido completos.','error');return}
  if(!phone){showNotice(notice,'Escribe un celular colombiano válido de 10 dígitos.','error');return}
- if(!socialFollowConfirmed){showNotice(notice,'Para inscribirte, sigue a BellaShop en Instagram y TikTok y confirma que ya lo hiciste.','error');document.getElementById('social-follow-consent').focus();return}
+ if(!socialStepsDone()){
+  showNotice(notice,'Primero abre los enlaces de Instagram y TikTok y regresa a confirmar que ya nos sigues.','error');
+  socialProgress.scrollIntoView({behavior:'smooth',block:'center'});
+  return;
+ }
+ if(!socialFollowConfirmed){
+  showNotice(notice,'Después de seguir ambas cuentas, marca la casilla de confirmación.','error');
+  socialConsent.focus();return;
+ }
  if(!consent){showNotice(notice,'Debes autorizar el tratamiento de datos.','error');return}
  if(trap)return;
  button.disabled=true;button.textContent='Registrando...';
