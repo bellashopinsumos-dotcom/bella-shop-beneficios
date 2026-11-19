@@ -72,3 +72,62 @@ create policy "admin_gestiona_beneficios" on public.benefits
 insert into public.teachers(display_name,slug) values ('Master Viviana','viviana');
 -- Luego de crear usuario en Auth > Users:
 -- insert into public.admins(user_id) values ('UID_DEL_USUARIO_AUTH');
+
+-- Funcionalidades adicionales de temporada instaladas en Master Viviana:
+-- registro directo, herramientas CRUD del administrador y apertura/cierre de inscripciones.
+grant insert, delete on public.students to authenticated;
+grant update(full_name, phone, teacher_id, status) on public.students to authenticated;
+create policy "admin_agrega_estudiantes" on public.students
+ for insert to authenticated
+ with check(exists(select 1 from public.admins a where a.user_id=(select auth.uid()) and a.enabled));
+create policy "admin_elimina_estudiantes" on public.students
+ for delete to authenticated
+ using(exists(select 1 from public.admins a where a.user_id=(select auth.uid()) and a.enabled));
+
+create table public.campaign_settings(
+ id smallint primary key default 1 check(id=1),
+ registration_open boolean not null default true,
+ ends_at timestamptz,
+ updated_at timestamptz not null default now()
+);
+alter table public.campaign_settings enable row level security;
+revoke all on public.campaign_settings from public,anon,authenticated;
+grant select on public.campaign_settings to anon;
+grant select,update on public.campaign_settings to authenticated;
+create policy "public_consulta_estado_campana" on public.campaign_settings
+ for select to anon using(true);
+create policy "admin_consulta_campana" on public.campaign_settings
+ for select to authenticated
+ using(exists(select 1 from public.admins a where a.user_id=(select auth.uid()) and a.enabled));
+create policy "admin_edita_campana" on public.campaign_settings
+ for update to authenticated
+ using(exists(select 1 from public.admins a where a.user_id=(select auth.uid()) and a.enabled))
+ with check(exists(select 1 from public.admins a where a.user_id=(select auth.uid()) and a.enabled));
+insert into public.campaign_settings(id,registration_open) values(1,true);
+
+create table public.bella_registration_limits(
+ bucket text primary key,
+ attempts integer not null default 0,
+ expires_at timestamptz not null
+);
+alter table public.bella_registration_limits enable row level security;
+revoke all on public.bella_registration_limits from public,anon,authenticated;
+grant select,insert,update,delete on public.bella_registration_limits to service_role;
+create function public.bella_check_registration_limit(
+ p_bucket text,p_max integer,p_window_seconds integer
+) returns boolean language plpgsql security invoker set search_path=public,pg_temp as $$
+declare hits integer;
+begin
+ if length(p_bucket)>180 or length(p_bucket)<3 or p_max not between 1 and 1000
+  or p_window_seconds not between 60 and 86400 then return false; end if;
+ insert into public.bella_registration_limits(bucket,attempts,expires_at)
+ values(p_bucket,1,now()+make_interval(secs=>p_window_seconds))
+ on conflict(bucket) do update
+ set attempts=case when public.bella_registration_limits.expires_at<=now() then 1 else public.bella_registration_limits.attempts+1 end,
+     expires_at=case when public.bella_registration_limits.expires_at<=now() then now()+make_interval(secs=>p_window_seconds)
+     else public.bella_registration_limits.expires_at end
+ returning attempts into hits;
+ return hits<=p_max;
+end $$;
+revoke all on function public.bella_check_registration_limit(text,integer,integer) from public,anon,authenticated;
+grant execute on function public.bella_check_registration_limit(text,integer,integer) to service_role;
