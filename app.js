@@ -64,6 +64,59 @@ function loadCaptcha(){
  script.src='https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onBellaTurnstileLoaded&render=explicit';
  script.async=true;script.defer=true;document.head.append(script);
 }
+function renderRegistrationBenefits(result){
+ const container=document.getElementById('success-benefits-list');
+ container.replaceChildren();
+ const offers=Array.isArray(result?.benefits)?result.benefits:[];
+ if(!offers.length){
+  const empty=document.createElement('p');
+  empty.className='benefits-empty';
+  empty.textContent='En este momento no hay descuentos publicados. Consulta en BellaShop por los precios especiales de esta temporada.';
+  container.append(empty);return;
+ }
+ const formatPercent=value=>{
+  const n=Number(value);
+  return Number.isFinite(n)?n.toLocaleString('es-CO',{maximumFractionDigits:2})+' %':'';
+ };
+ const now=new Date();
+ for(const benefit of offers){
+  if(!benefit||typeof benefit!=='object')continue;
+  const title=String(benefit.title||'Beneficios BellaShop').slice(0,120);
+  const items=Array.isArray(benefit.items)?benefit.items.slice(0,30):[];
+  const article=document.createElement('article');article.className='selected-benefit-card';
+  const head=document.createElement('h4');head.textContent=title;article.append(head);
+  const list=document.createElement('ul');list.className='selected-benefit-list';
+  for(const value of items){
+   const item=String(value??'').trim();
+   if(!item)continue;
+   const li=document.createElement('li');
+   // El administrador admite códigos y descripciones. No aplicar un 10% general
+   // a las ofertas que explícitamente tienen porcentajes o descuentos distintos.
+   const isSku=!/[\s%$]/.test(item)&&item.length<=48;
+   li.textContent=isSku?
+    item+' · '+formatPercent(benefit.percent_off)+' de descuento':
+    item;
+   list.append(li);
+  }
+  if(list.children.length)article.append(list);
+  else{
+   const p=document.createElement('p');p.textContent='Consulta en BellaShop las referencias participantes.';
+   article.append(p);
+  }
+  if(benefit.terms){
+   const terms=document.createElement('p');terms.className='selected-benefit-terms';
+   terms.textContent=String(benefit.terms);article.append(terms);
+  }
+  const expires=new Date(benefit.ends_at||0);
+  if(Number.isFinite(expires.getTime())&&expires>now){
+   const date=document.createElement('p');date.className='selected-benefit-date';
+   date.textContent='Válido hasta '+expires.toLocaleDateString('es-CO',{timeZone:'America/Bogota'});
+   article.append(date);
+  }
+  container.append(article);
+ }
+}
+
 form.addEventListener('submit',async event=>{
  event.preventDefault();notice.classList.add('hidden');
  if(!teacher)return;
@@ -88,7 +141,8 @@ form.addEventListener('submit',async event=>{
  button.disabled=true;button.textContent='Registrando...';
  try{
   const token=window.turnstile&&captchaId!==null?window.turnstile.getResponse(captchaId):null;
-  await register({full_name:fullName,phone,teacher_slug:teacher.slug,consent:true,social_follow_confirmed:socialFollowConfirmed,policy_version:config().policyVersion||'2026-11-19-v1',turnstile_token:token,website:trap});
+  const result=await register({full_name:fullName,phone,teacher_slug:teacher.slug,consent:true,social_follow_confirmed:socialFollowConfirmed,policy_version:config().policyVersion||'2026-11-19-v1',turnstile_token:token,website:trap});
+  renderRegistrationBenefits(result);
   form.classList.add('hidden');
   document.getElementById('form-title').classList.add('hidden');
   document.querySelector('.register-panel .subheading')?.classList.add('hidden');
