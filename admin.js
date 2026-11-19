@@ -78,7 +78,7 @@ function studentCard(s,withBenefits=false){
  const selected=s.status==='active'?benefits.filter(b=>b.teacher_id===s.teacher_id&&active(b)):[];
  return '<article class="student-card">'+
   '<div class="card-head"><h3>'+e(s.full_name)+'</h3><span class="status '+(s.status==='active'?'':'off')+'">'+(s.status==='active'?'Activa':'Suspendida')+'</span></div>'+
-  '<p class="benefit-meta">'+e(s.phone)+' · '+e(teacherName(s.teacher_id))+' · '+new Date(s.created_at).toLocaleDateString('es-CO')+'</p>'+
+  '<p class="benefit-meta">'+e(s.phone)+' · '+e(teacherName(s.teacher_id))+' · '+new Date(s.created_at).toLocaleDateString('es-CO')+'</p>'+'<p class="benefit-meta">Redes: '+(s.social_follow_declared_at?'Confirmación declarada el '+new Date(s.social_follow_declared_at).toLocaleDateString('es-CO'):'Sin confirmación registrada')+'</p>'+
   (withBenefits?'<p class="benefit-meta"><b>Beneficios vigentes:</b> '+(selected.length?selected.map(b=>e(b.title)+' ('+Number(b.percent_off)+'%)').join(', '):'Ninguno')+'</p>':'')+
   '<div class="admin-actions">'+
   '<button type="button" class="tiny-button" data-action="student-edit" data-id="'+e(s.id)+'">Editar</button>'+
@@ -91,7 +91,7 @@ function showStudents(rows,target,withBenefits=false){
  $(target).innerHTML=rows.length?'<div class="student-grid">'+rows.map(s=>studentCard(s,withBenefits)).join('')+'</div>':'No hay registros para mostrar.';
 }
 async function recents(){
- const rows=await privateRequest('students?select=id,full_name,phone,teacher_id,status,created_at&order=created_at.desc&limit=30');
+ const rows=await privateRequest('students?select=id,full_name,phone,teacher_id,status,social_follow_declared_at,created_at&order=created_at.desc&limit=30');
  showStudents(rows,'recent-students');
 }
 $('search-form').addEventListener('submit',async ev=>{
@@ -335,12 +335,12 @@ $('export-students').addEventListener('click',async()=>{
  try{
   const rows=[];
   for(let offset=0;offset<50000;offset+=1000){
-   const page=await privateRequest('students?select=full_name,phone,teacher_id,status,consented_at,created_at&order=created_at.desc&limit=1000&offset='+offset);
+   const page=await privateRequest('students?select=full_name,phone,teacher_id,status,consented_at,social_follow_declared_at,created_at&order=created_at.desc&limit=1000&offset='+offset);
    rows.push(...page);if(page.length<1000)break;
   }
-  const columns=['Nombre','Celular','Profesora','Estado','Fecha de autorización','Fecha de registro'];
+  const columns=['Nombre','Celular','Profesora','Estado','Fecha de autorización','Confirmación declarada de redes','Fecha de registro'];
   const csvField=value=>{let s=String(value??'');if(/^[=+@\-\t\r]/.test(s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"'};
-  const lines=[columns,...rows.map(s=>[s.full_name,s.phone,teacherName(s.teacher_id),s.status,s.consented_at,s.created_at])]
+  const lines=[columns,...rows.map(s=>[s.full_name,s.phone,teacherName(s.teacher_id),s.status,s.consented_at,s.social_follow_declared_at,s.created_at])]
    .map(row=>row.map(csvField).join(';')).join('\r\n');
   const blob=new Blob(['\ufeff'+lines],{type:'text/csv;charset=utf-8'});
   const url=URL.createObjectURL(blob);
