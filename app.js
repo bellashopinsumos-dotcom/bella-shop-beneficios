@@ -14,6 +14,7 @@ async function start(){
   const rows=await publicGet('teachers?select=id,display_name,slug&slug=eq.'+encodeURIComponent(slug)+'&active=eq.true&limit=1');
   if(!rows?.length){lock('Este enlace no está activo. Consulta en BellaShop.');return}
   teacher=rows[0];teacherDisplay.textContent=teacher.display_name;teacherReadonly.value=teacher.display_name;
+  if(config().registrationEnabled!==true){lock('El registro estará disponible próximamente. BellaShop está finalizando la activación de los beneficios.');}
  }catch(err){console.error(err);lock('Por ahora no pudimos cargar el registro. Intenta más tarde.')}
 }
 function loadCaptcha(){
