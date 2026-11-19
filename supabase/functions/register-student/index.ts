@@ -33,6 +33,23 @@ async function hashIp(ip:string){
  const bytes=new Uint8Array(await crypto.subtle.digest('SHA-256',seed));
  return Array.from(bytes,b=>b.toString(16).padStart(2,'0')).join('');
 }
+// Devolver solamente las ofertas vigentes de la profesora, nunca registros de estudiantes.
+async function getCurrentOffers(teacherId:string){
+ const now=encodeURIComponent(new Date().toISOString());
+ const path='/rest/v1/benefits?select=title,percent_off,product_codes,terms,ends_at'+
+  '&teacher_id=eq.'+encodeURIComponent(teacherId)+'&active=eq.true'+
+  '&starts_at=lte.'+now+'&ends_at=gte.'+now+'&order=ends_at.asc&limit=30';
+ const response=await fetch(url+path,{headers:serverHeaders()});
+ if(!response.ok)throw Error('benefits_unavailable');
+ const rows=await response.json();
+ return rows.map((b:Record<string,unknown>)=>({
+  title:String(b.title||'Beneficios BellaShop').slice(0,120),
+  percent_off:Number(b.percent_off||0),
+  items:Array.isArray(b.product_codes)?b.product_codes.map(v=>String(v).slice(0,180)).slice(0,30):[],
+  terms:String(b.terms||'').slice(0,500),
+  ends_at:String(b.ends_at||'')
+ }));
+}
 async function allowLimit(bucket:string,max:number,seconds:number){
  const response=await fetch(url+'/rest/v1/rpc/bella_check_registration_limit',{
   method:'POST',headers:serverHeaders(),
@@ -93,9 +110,12 @@ Deno.serve(async(req:Request)=>{
    })
   });
   // No revelar si un número ya estaba inscrito.
-  if(result.status===409)return respond({ok:true});
-  if(!result.ok){console.error('Failed registration',result.status);throw Error('insert_failed')}
-  return respond({ok:true});
+  if(result.status!==409 && !result.ok){console.error('Failed registration',result.status);throw Error('insert_failed')}
+  // Si los beneficios no cargan, el registro sigue completado: no confundimos al cliente.
+  let offers:unknown[]=[];
+  try{offers=await getCurrentOffers(found[0].id)}
+  catch(err){console.error('Could not load offers after successful registration',err)}
+  return respond({ok:true,benefits:offers,first_purchases_limit:2});
  }catch(err){
   console.error('Register student error',err);
   return respond({error:'register_unavailable'},503);
