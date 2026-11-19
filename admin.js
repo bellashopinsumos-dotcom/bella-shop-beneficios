@@ -339,7 +339,7 @@ $('export-students').addEventListener('click',async()=>{
    rows.push(...page);if(page.length<1000)break;
   }
   const columns=['Nombre','Celular','Profesora','Estado','Fecha de autorización','Fecha de registro'];
-  const csvField=value=>'"'+String(value??'').replace(/"/g,'""')+'"';
+  const csvField=value=>{let s=String(value??'');if(/^[=+@\-\t\r]/.test(s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"'};
   const lines=[columns,...rows.map(s=>[s.full_name,s.phone,teacherName(s.teacher_id),s.status,s.consented_at,s.created_at])]
    .map(row=>row.map(csvField).join(';')).join('\r\n');
   const blob=new Blob(['\ufeff'+lines],{type:'text/csv;charset=utf-8'});
