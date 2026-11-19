@@ -1,3 +1,8 @@
-// Configurar EXCLUSIVAMENTE con el proyecto nuevo BellaShop Beneficios.
-// Las claves sb_secret_ o service_role NUNCA van aquí.
-window.BELLA_CONFIG = {supabaseUrl:"",publishableKey:"",turnstileSiteKey:"",policyVersion:"2026-11-19-v1"};
+// Configuración pública del proyecto INDEPENDIENTE Master Viviana.
+// Esta clave publicable no permite leer estudiantes ni entrar al administrador.
+window.BELLA_CONFIG = {
+  supabaseUrl: "https://faijbrdkxuqcgszlxqrx.supabase.co",
+  publishableKey: "sb_publishable_emGZIFzWluLckjwlCAO6kQ_a7G61rM_",
+  turnstileSiteKey: "", // Pendiente de configurar Turnstile.
+  policyVersion: "2026-11-19-v1"
+};
