@@ -4,5 +4,6 @@ window.BELLA_CONFIG = {
   supabaseUrl: "https://faijbrdkxuqcgszlxqrx.supabase.co",
   publishableKey: "sb_publishable_emGZIFzWluLckjwlCAO6kQ_a7G61rM_",
   turnstileSiteKey: "", // Pendiente de configurar Turnstile.
+  registrationEnabled: false, // Activar sólo tras configurar captcha y política de datos.
   policyVersion: "2026-11-19-v1"
 };
