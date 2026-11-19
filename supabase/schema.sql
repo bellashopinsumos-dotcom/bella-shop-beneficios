@@ -15,6 +15,7 @@ create table public.students (
  teacher_id uuid not null references public.teachers(id),
  status text not null default 'active' check (status in ('active','suspended')),
  consented_at timestamptz not null,
+ social_follow_declared_at timestamptz, -- Declaración voluntaria; no prueba seguimiento real
  policy_version text not null,
  created_at timestamptz not null default now()
 );
@@ -69,7 +70,7 @@ create policy "admin_gestiona_beneficios" on public.benefits
  for all to authenticated
  using(exists(select 1 from public.admins a where a.user_id=(select auth.uid()) and a.enabled))
  with check(exists(select 1 from public.admins a where a.user_id=(select auth.uid()) and a.enabled));
-insert into public.teachers(display_name,slug) values ('Master Viviana','viviana');
+insert into public.teachers(display_name,slug) values ('Master Viviana Galvis','viviana');
 -- Luego de crear usuario en Auth > Users:
 -- insert into public.admins(user_id) values ('UID_DEL_USUARIO_AUTH');
 
