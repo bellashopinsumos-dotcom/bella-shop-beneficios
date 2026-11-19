@@ -23,7 +23,7 @@ Sistema independiente para registrar estudiantes referidas por una profesora, ve
    ```
 
 5. Desplegar la función `register-student` desde Supabase Edge Functions con `verify_jwt=false` **porque es un registro público**. Usa `SUPABASE_URL` y la clave de servidor `BELLA_SERVER_KEY` configuradas como secretos; si no se define `BELLA_SERVER_KEY`, usa `SUPABASE_SERVICE_ROLE_KEY` cuando esté disponible. **NUNCA publicar claves de servidor en GitHub ni en config.js.**
-6. Antes de recibir registros reales, activar Cloudflare Turnstile: `TURNSTILE_SECRET` solo en los secretos de Edge Functions, `turnstileSiteKey` público en `config.js`. También configurar `ALLOWED_ORIGIN` con el origen exacto de GitHub Pages, por ejemplo `https://bellashopinsumos-dotcom.github.io` (sin `/bella-shop-beneficios/`). Este servicio no incorpora por ahora una limitación transaccional por IP: Turnstile es importante para minimizar abuso.
+6. Antes de recibir registros reales, activar Cloudflare Turnstile: `TURNSTILE_SECRET` solo en los secretos de Edge Functions, `turnstileSiteKey` público en `config.js`. También configurar `ALLOWED_ORIGIN` con el origen exacto de GitHub Pages, por ejemplo `https://bellashopinsumos-dotcom.github.io` (sin `/bella-shop-beneficios/`). Este servicio no incorpora por ahora una limitación transaccional por IP: Turnstile es obligatorio para activar el registro público: esta versión de la función rechaza registros si falta TURNSTILE_SECRET.
 7. Copiar la URL del nuevo proyecto y su **publishable key** (`sb_publishable_...`) en `config.js`, que es el archivo que también se sube a GitHub Pages. No usar `sb_secret_...` aquí.
 8. Completar `privacidad.html` con los datos reales del responsable y política correspondiente; el borrador actual no es una política final. Confirmar la grafía oficial del nombre de la profesora y actualizarlo en la tabla `teachers`.
 9. Subir los archivos (conservar las rutas de subcarpetas), entrar a Settings > Pages > Deploy from a branch > `main` > `/ (root)`.
@@ -51,4 +51,8 @@ Sistema independiente para registrar estudiantes referidas por una profesora, ve
 
 ## Nota de seguridad
 
-La función pública incluye validación, controles de origen, honeypot y soporte Turnstile, pero no incorpora auditoría ni límites de solicitudes transaccionales; para una versión de mayor tráfico se recomienda añadirlos. El control de origen **no sustituye** captcha ni autenticación. Evita desplegar sin completar primero la protección antiabuso y la política de datos.
+La función pública exige validación, origen autorizado, honeypot y Turnstile; no incorpora auditoría ni límites transaccionales de solicitudes; para una versión de mayor tráfico se recomienda añadirlos. El control de origen **no sustituye** captcha ni autenticación. Evita desplegar sin completar primero la protección antiabuso y la política de datos.
+
+## Publicación GitHub Pages (automática)
+
+El repositorio incorpora `.github/workflows/pages.yml` para publicar automáticamente la página desde `main`. Si el primer despliegue no activa GitHub Pages, ve a Settings > Pages > Build and deployment y selecciona GitHub Actions como origen; comprueba el resultado en la pestaña Actions. No compartir el QR mientras Supabase, Turnstile y la política de privacidad sigan pendientes.
